@@ -1,6 +1,8 @@
 import pyautogui as gui
 import webbrowser
 import time
+from matplotlib import pyplot as plt
+from pytesseract import image_to_string
 from googletrans import Translator
 
 def click(path, after=0):
@@ -12,16 +14,26 @@ def click(path, after=0):
         gui.mouseDown()
         gui.mouseUp()
     except:
-        print("button not found")
+        print(path + "button not found")
+        
+def getSentence():
+    pos=gui.locateOnScreen('screenshots/sound.png', grayscale=True, confidence=0.75)
+    region = (pos[0] + pos[2], pos[1], 500, pos[3])
+    screenshot = gui.screenshot(region=region)
+#     plt.imshow(screenshot)
+#     plt.show()
+    text = image_to_string(screenshot)
+    print(text)
+    
         
 def openLesson(name, after=0):
     time.sleep(after)
     gui.hotkey('command','f')
     time.sleep(.5)
     gui.typewrite(name)
-    time.sleep(1)
+    time.sleep(.5)
     gui.press('esc')
-    click("screenshots/" + name + ".png", 2)
+    click("screenshots/lessons/" + name + ".png", 2)
     click('screenshots/start.png', 2)
 
 
@@ -43,11 +55,12 @@ def translate(sentance):
         translated = translator.translate(sentance, dest='en').text
     
 
-login("21horspbosk@washk12.org","bobbob11")
+# login("21horspbosk@washk12.org","bobbob11")
+webbrowser.open('http://duolingo.com/', new=2)
+openLesson('plurals', 1)
 
-openLesson('plurals', 3)
-
-click('screenshots/use-keyboard.png', 2)
+click('screenshots/use-keyboard.png', 1)
+getSentence()
 
 
 
