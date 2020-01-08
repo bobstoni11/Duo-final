@@ -6,7 +6,7 @@ import pytesseract
 from googletrans import Translator
 
 pytesseract.pytesseract.tesseract_cmd = "tesseract/4.1.0/bin/tesseract"
-translator = Translator()
+translator = Translator(service_urls=["translate.google.com"])
 
 def click(path, after=0):
     time.sleep(after)
@@ -23,11 +23,15 @@ def click(path, after=0):
         
 def getSentence():
     try:
-        pos=gui.locateOnScreen('screenshots/sound.png', grayscale=True, confidence=0.5)
-        region = (pos[0] + pos[2], pos[1]-10, 800, pos[3] + 20)
+        try:
+            pos=gui.locateOnScreen('screenshots/sound.png', grayscale=True, confidence=0.5)
+            region = (pos[0] + pos[2], pos[1]-10, 800, pos[3] + 20)
+        except:
+            pos=gui.locateOnScreen('screenshots/write.png', grayscale=True, confidence=0.5)
+            region = (pos[0], pos[1] + pos[3] * 1.69, 800, pos[3] + 20)
     except:
-        pos=gui.locateOnScreen('screenshots/write.png', grayscale=True, confidence=0.5)
-        region = (pos[0], pos[1] + pos[3] * 1.69, 800, pos[3] + 20)
+        gui.hotkey('enter')
+        region = (0, 0, 1, 1)
 
     
     try:
@@ -66,8 +70,8 @@ def login(user, passwd):
 def translate(sentence):
     curLan = translator.detect(sentence).lang
     if(curLan == 'en'):
-        translated = translator.translate(sentence, dest='de').text
-    elif(curLan == 'de'):
+        translated = translator.translate(sentence, dest='es').text
+    elif(curLan == 'es'):
         translated = translator.translate(sentence, dest='en').text
     return translated
     
@@ -87,7 +91,7 @@ def doLesson():
 
 # login("21horspbosk@washk12.org","bobbob11")
 webbrowser.open('http://duolingo.com/', new=2)
-openLesson('adjectives', 1.3)
+openLesson('countries', 1.3)
 doLesson()
 
 
